@@ -1,0 +1,15 @@
+---
+name: PocketShops
+version: 1.0.0
+main: al5ina5\PocketShops\Main
+api: 3.11.6
+
+commands:
+ shop:
+  description: Opens a shop.
+  usage: /shop [shop-name]
+permissions:
+ pocketshops.command.shop:
+  description: Allows access to the /shop command.
+  default: OP
+...

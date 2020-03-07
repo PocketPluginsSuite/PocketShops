@@ -1,0 +1,16 @@
+# Here's an example shop! It can be opened by running `/shop food` and requires the `shop.command.food` permission.
+food:
+  name: Groovy Food Shop
+  sections:
+    0:
+      name: Cheap Meals
+      items:
+      - "297:0:1:6:-1" # [item-id]:[data-value]:[stack]:[price][sell-price]:[custom-name]
+      - "350:0:1:8:-1"
+    2:
+      name: Special Meals
+      items:
+      - "cmd:Test Command (Salute Joe):0:tell @p Salute @p!" # cmd:[product-name]:[price]:[command]
+      - "297:0:1:6:-1"
+      - "350:0:1:12:-1"
+      - "320:0:1:8:-1"
