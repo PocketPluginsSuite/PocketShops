@@ -53,4 +53,4 @@ PocketShops supports selling commands. This expands the possibilities of shop it
 ```
 
 # Support
-Need support? [Join us on Discord.](https://invite.gg/underforums/)
+Need support? [Join us on Discord.](https://invite.gg/underforums/) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://invite.gg/underforums)
