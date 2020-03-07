@@ -1,4 +1,4 @@
-# PocketShops
+# PocketShops [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://invite.gg/underforums)
 PocketShops is the self-proclaimed **best** shop plugin for PocketMine.
 
 PocketShops aims to be an extremely powerful solution to create shops on PocketMine servers, while maintaining an ease-of-use that allows anyone to quickly get shop working in just a few minutes. This plugin has built-in support for [Onebone's EconomyAPI (PocketMine Economy Solution)](https://github.com/onebone/EconomyS) and uses [jojoe77777's libFormAPI](https://github.com/jojoe77777/FormAPI) to create in-game menu's (GUI) for shops.
