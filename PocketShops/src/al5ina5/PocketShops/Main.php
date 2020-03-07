@@ -205,6 +205,7 @@ class Main extends PluginBase implements Listener{
 
     public function purchaseItem($item, $quantity, $player) {
         $itemObject = Item::get($item["id"], $item["dv"], $item["stack"] * $quantity);
+        if ($item["custom_name"] != $item["name"]) $itemObject->setCustomName($item["custom_name"]);
 
         if (!$player->getInventory()->canAddItem($itemObject)) {
             $player->sendMessage($this->config->get("lang")["not_enough_storage"]);
@@ -228,8 +229,8 @@ class Main extends PluginBase implements Listener{
     public function parseShopItem($entry) {
         $item = [];
 
-        $item["command"] = false; // cmd:The Alleviator:12000:citem alleviator @p
-        if (explode(":", $entry)[0] == "cmd") {
+        $item["command"] = false;
+        if (explode(":", $entry)[0] == "cmd") { // cmd:The Alleviator:12000:citem alleviator @p
             $item["command"] = explode(":", $entry)[3];
             $item["price"] = (int) explode(":", $entry)[2];
             $item["name"] = explode(":", $entry)[1];

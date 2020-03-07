@@ -7,6 +7,7 @@ food:
       items:
       - "297:0:1:6:-1" # [item-id]:[data-value]:[stack]:[price][sell-price]:[custom-name]
       - "350:0:1:8:-1"
+      - "bundle:bundlename"
     2:
       name: Special Meals
       items:
