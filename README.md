@@ -16,7 +16,7 @@ PocketShops aims to be an extremely powerful solution to create shops on PocketM
 # Installation
 Installation is simple. You have 2 options.
 1. Download the latest .phar of PocketShops on Poggit (coming soon) and place it into your `/plugins/` folder.
-2. Clone this repository into your `/plugins/` folder. You must have [PocketMine's DevTools plugin](https://poggit.pmmp.io/p/DevTools) installed on your server.
+2. Run the plugin from source code by cloning this repository into your `/plugins/` folder. You must have [PocketMine's DevTools plugin](https://poggit.pmmp.io/p/DevTools) installed on your server.
 
 # Setup
 In an effort to be simple and non-intrusive, the PocketShops **does not** have any shops configured by default.
