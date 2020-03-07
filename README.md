@@ -3,6 +3,15 @@ PocketShops is the self-proclaimed **best** shop plugin for PocketMine.
 
 PocketShops aims to be an extremely powerful solution to create shops on PocketMine servers, while maintaining an ease-of-use that allows anyone to quickly get shop working in just a few minutes. This plugin has built-in support for [Onebone's EconomyAPI (PocketMine Economy Solution)](https://github.com/onebone/EconomyS) and uses [jojoe77777's libFormAPI](https://github.com/jojoe77777/FormAPI) to create in-game menu's (GUI) for shops.
 
+# Features
+[x] Multiple shops: Create as many as you need!
+[x] Per-shop permissions: Allows access to shops on a per-rank basis.
+[x] Easy set-up: Clearly defined `shops.yml` and easy-to-read documentation.
+[x] Active development and community: Get help from the developer(s) on UNDERFORUMS. This plugins serves their servers so is constantly under development.
+[ ] Complex, annoying, or bloated features. Never!
+[ ] Difficult installation processes. Nope!
+[ ] Using unsupported or old versions of PocketMine. Nah!
+
 # Installation
 Installation is simple. You have 2 options.
 1. Download the latest .phar of PocketShops on Poggit (coming soon) and place it into your `/plugins/` folder.
