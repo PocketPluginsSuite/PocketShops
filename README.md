@@ -36,10 +36,18 @@ PocketShops only has 1 permission node: `pocketshops.command.[shop-name]`
 
 ## Configuring Your Shop's Items
 Items are defined in the following format:
-```- "297:0:1:6:-1"```
-```- "[item-id]:[data-value]:[stack]:[price][sell-price]:[custom-name]"```
+```
+- "297:0:1:6:-1"
+```
+```
+- "[item-id]:[data-value]:[stack]:[price][sell-price]:[custom-name]"
+```
 
 ## Selling a Command
 PocketShops supports selling commands. This expands the possibilites of shop items to a near limitless extent. Combined with my PocketItems plugin (comng soon), you can easily sell 'custom' items.
-```- "cmd:Test Command (Salute Joe):10:tell @p Salute @p!" # cmd:[product-name]:[price]:[command]```
-```- "cmd:[product-name]:[price]:[command]"
+```
+- "cmd:Test Command (Salute Joe):10:tell @p Salute @p!" # cmd:[product-name]:[price]:[command]
+```
+```
+- "cmd:[product-name]:[price]:[command]"
+```
