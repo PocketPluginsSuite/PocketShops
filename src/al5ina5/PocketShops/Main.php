@@ -24,13 +24,14 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerRespawnEvent;
 use pocketmine\Player;
 use pocketmine\Server;
+use pocketmine\item\Item;
+use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
+use pocketmine\permission\Permission;
+use onebone\economyapi\EconomyAPI;
+
 use jojoe77777\FormAPI\CustomForm;
 use jojoe77777\FormAPI\SimpleForm;
-use pocketmine\utils\Config;
-use pocketmine\item\Item;
-use onebone\economyapi\EconomyAPI;
-use pocketmine\permission\Permission;
 
 /**
  * Main
@@ -64,6 +65,7 @@ class Main extends PluginBase implements Listener
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     
         $defaultConfig = [
+            "allow_in_creative" => false,
             "default_shop" => "shop",
             "lang" => [
                 "onenable_message" => "Enabled",
@@ -76,7 +78,8 @@ class Main extends PluginBase implements Listener
                 "you_sold" => "You sold [quantity] [item] for $[profit].",
                 "no_permission" => "You do not have permission to access this shop.",
                 "no_shops_defined" => "No shops are defined in the shops.yml file. Please define at least one shop and this message will disappear forever. Please refer to documentation for information on how to define shops.",
-                "shop_not_found" => "That shop does not exist."
+                "shop_not_found" => "That shop does not exist.",
+                "now_allowed_in_creative" => "You can't open shops in creative."
             ],
             "plugin_info" => [
                 "author" => "Sebastian Alsina",
@@ -167,6 +170,11 @@ class Main extends PluginBase implements Listener
             return true;
         }
 
+        if ($player->getGamemode() == Player::CREATIVE && !$this->config->get("allow_in_creative")) {
+            $player->sendMessage($this->config->get("lang")["now_allowed_in_creative"]);
+            return true;
+        }
+
         $shop = $this->shops->getAll()[$shopName];
 
         if (!$player->hasPermission("pocketshops.command.$shopName")) {
@@ -204,7 +212,7 @@ class Main extends PluginBase implements Listener
      */
     public function openShopSection($shop, int $sectionID, Player $player)
     {
-        $section = $shop["sections"][$sectionID];
+        $section = array_values($shop["sections"])[$sectionID];
 
         $form = new SimpleForm(
             function (Player $player, $data) use ($section) {
