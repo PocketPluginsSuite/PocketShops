@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * The main file of the PocketShops plugin.
+ * 
+ * PHP Version 7
+ *
+ * @category CategoryName
+ * @package  PackageName
+ * @author   Sebastian Alsina <author@example.com>
+ * @license  MIT http://underforums.com/
+ * @link     http://underforums.com/
+ */
+
 declare(strict_types=1);
 
 namespace al5ina5\PocketShops;
@@ -20,14 +32,35 @@ use pocketmine\item\Item;
 use onebone\economyapi\EconomyAPI;
 use pocketmine\permission\Permission;
 
-class Main extends PluginBase implements Listener{
-
-	public function onLoad(){
-		$this->getLogger()->info(TextFormat::WHITE . "I've been loaded!");
+/**
+ * Main
+ * 
+ * @category Plugin
+ * @package  PocketShops
+ * @author   Sebastian Alsina <alsinas@me.com>
+ * @license  MIT http://underforums.com
+ * @link     http://underforums.com
+ */
+class Main extends PluginBase implements Listener
+{
+    /**
+     * An event fired when the plugin loads.
+     *
+     * @return void
+     */
+    public function onLoad()
+    {
+        $this->getLogger()->info(TextFormat::WHITE . "I've been loaded!");
         @mkdir($this->getDataFolder());
     }
-
-	public function onEnable(){
+    
+    /**
+     * An event fired when plugin is enabled.
+     *
+     * @return void
+     */
+    public function onEnable()
+    {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     
         $defaultConfig = [
@@ -56,40 +89,73 @@ class Main extends PluginBase implements Listener{
         $this->config = new Config($this->getDataFolder() . "config.yml", Config::YAML, $defaultConfig);
         $this->shops = new Config($this->getDataFolder() . "shops.yml", Config::YAML);
 
-        foreach($this->shops as $shop => $info) {
+        foreach ($this->shops as $shop => $info) {
             $perm = new Permission("shop.command.$shop", "Access to the '$shop' shop.");
             $this->getPlugin()->getServer()->getPluginManager()->addPermission($perm);
         }
 
-		$this->getLogger()->info(TextFormat::YELLOW . TextFormat::BOLD . $this->config->get("lang")["onenable_message"]);
+        $this->getLogger()->info(TextFormat::YELLOW . TextFormat::BOLD . $this->config->get("lang")["onenable_message"]);
     }
 
-	public function onDisable(){
-		$this->getLogger()->info( TextFormat::YELLOW . TextFormat::BOLD . $this->config->get("lang")["ondisable_message"]);
+    
+    /**
+     * An event fired when the plugin is disabled.
+     *
+     * @return void
+     */
+    public function onDisable()
+    {
+        $this->getLogger()->info(TextFormat::YELLOW . TextFormat::BOLD . $this->config->get("lang")["ondisable_message"]);
+    }
+
+    /**
+     * An event fired when a player runs a command.
+     *
+     * @param CommandSender $sender  The sender.
+     * @param Command       $command The command.
+     * @param string        $label   The label.
+     * @param array         $args    The arguments.
+     * 
+     * @return bool
+     */
+    public function onCommand(CommandSender $sender, Command $command, $label, array $args) : bool
+    {
+        switch($command->getName()){
+        case "shop":
+            if (!isset($args[0])) {
+                $this->openShop($this->config->get("default_shop"), $sender->getPlayer());
+                return true;
+            }
+
+            $this->openShop($args[0], $sender->getPlayer());
+                
+            return true;
+        default:
+            return true;
+        }
     }
     
-	public function onCommand(CommandSender $sender, Command $command, $label, array $args) : bool {
-		switch($command->getName()){
-            case "shop":
-                if (!isset($args[0])) {
-                    $this->openShop($this->config->get("default_shop"), $sender->getPlayer());
-                    return true;
-                }
-
-                $this->openShop($args[0], $sender->getPlayer());
-                
-                return true;
-			default:
-				return true;
-		}
-	}
-
-    public function reloadShopAndConfig() : void {
+    /**
+     * Reloads the plugin's .yml configuration files into memory.
+     *
+     * @return void
+     */
+    public function reloadShopAndConfig() : void
+    {
         $this->shops = new Config($this->getDataFolder() . "shops.yml", Config::YAML);
         $this->config = new Config($this->getDataFolder() . "config.yml", Config::YAML);
     }
-
-    public function openShop(string $shopName, Player $player) {
+    
+    /**
+     * Opens a GUI that displays all the sections of a shop.
+     *
+     * @param string $shopName The name of the shop to open.
+     * @param Player $player   The player object of the player.
+     * 
+     * @return void
+     */
+    public function openShop(string $shopName, Player $player)
+    {
         $this->reloadShopAndConfig();
 
         if (count($this->shops->getAll()) <= 0) {
@@ -105,36 +171,58 @@ class Main extends PluginBase implements Listener{
         $shop = $this->shops->getAll()[$shopName];
 
         if (!$player->hasPermission("pocketshops.command.$shopName")) {
-            if ($this->config->get("lang")["no_permission"] != "") $player->sendMessage($this->config->get("lang")["no_permission"]);
+            if ($this->config->get("lang")["no_permission"] != "") {
+                $player->sendMessage($this->config->get("lang")["no_permission"]);
+            }
             return true;
         };
 
-        $form = new SimpleForm(function(Player $player, $data) use ($shop) {
-            if ($data === null) return;
+        $form = new SimpleForm(
+            function (Player $player, $data) use ($shop) {
+                if ($data === null) {
+                    return;
+                }
 
-            $this->openShopSection($shop, $data, $player);
-        });
+                $this->openShopSection($shop, $data, $player);
+            }
+        );
 
         $form->setTitle($shop["name"]);
-        foreach ($shop["sections"] as $section => $info) $form->addButton($info["name"]);
+        foreach ($shop["sections"] as $section => $info) {
+            $form->addButton($info["name"]);
+        }
         $form->sendToPlayer($player);
     }
-
-    public function openShopSection($shop, int $sectionID, Player $player) {
+    
+    /**
+     * Opens a GUI that displays all the items of a shop's section.
+     *
+     * @param array  $shop      The targeted shop.
+     * @param int    $sectionID The targeted section within that shop.
+     * @param Player $player    The player.
+     * 
+     * @return void
+     */
+    public function openShopSection($shop, int $sectionID, Player $player)
+    {
         $section = $shop["sections"][$sectionID];
 
-        $form = new SimpleForm(function(Player $player, $data) use ($section) {
-            if ($data === null) return;
+        $form = new SimpleForm(
+            function (Player $player, $data) use ($section) {
+                if ($data === null) {
+                    return;
+                }
 
-            $item = $this->parseShopItem($section["items"][$data]);
+                $item = $this->parseShopItem($section["items"][$data]);
 
-            if ($item["command"]) {
-                $this->purchaseCommand($item["command"], $item["price"], $player);
-                return;
+                if ($item["command"]) {
+                    $this->purchaseCommand($item["command"], $item["price"], $player);
+                    return;
+                }
+
+                $this->openItemOrder($section, $data, $player);
             }
-
-            $this->openItemOrder($section, $data, $player);
-        });
+        );
 
         $form->setTitle($section["name"]);
         foreach ($section["items"] as $item => $info) {
@@ -143,26 +231,45 @@ class Main extends PluginBase implements Listener{
         }
         $form->sendToPlayer($player);
     }
-
-    public function openItemOrder($section, int $itemID, $player) {
+    
+    /**
+     * Open the item order screen where a user can enter the quantity
+     * of an item and define wether they'd like to buy or sell.
+     *
+     * @param array  $section The targeted section.
+     * @param int    $itemID  The item within that section.
+     * @param Player $player  The player.
+     * 
+     * @return void
+     */
+    public function openItemOrder($section, int $itemID, $player)
+    {
         $item = $this->parseShopItem($section["items"][$itemID]);
 
-        $form = new CustomForm(function(Player $player, $data) use ($item) {
-            if ($data === null) return;
+        $form = new CustomForm(
+            function (Player $player, $data) use ($item) {
+                if ($data === null) { 
+                    return;
+                }
 
-            $quantity = 1;
-            if ((int) $data[1] > 0) $quantity = (int) $data[1];
+                $quantity = 1;
+                if ((int) $data[1] > 0) {
+                    $quantity = (int) $data[1];
+                }
 
-            $selling = false;
-            if ($data[2] == "1") $selling = true;
+                $selling = false;
+                if ($data[2] == "1") {
+                    $selling = true;
+                }
 
-            if ($selling) {
-                $this->sellItem($item, $quantity, $player);
-                return;
+                if ($selling) {
+                    $this->sellItem($item, $quantity, $player);
+                    return;
+                }
+
+                $this->purchaseItem($item, $quantity, $player);
             }
-
-            $this->purchaseItem($item, $quantity, $player);
-        });
+        );
 
         $form->setTitle($item["custom_name"]);
         $form->addLabel(
@@ -176,8 +283,18 @@ class Main extends PluginBase implements Listener{
         $form->addLabel(" ");
         $form->sendToPlayer($player);
     }
-
-    public function purchaseCommand($command, $price, $player) {
+        
+    /**
+     * Executes and command and reduces a player's money.
+     *
+     * @param string $command The command to run.
+     * @param int    $price   The price of the command product.
+     * @param Player $player  The player.
+     * 
+     * @return void
+     */
+    public function purchaseCommand($command, $price, $player)
+    {
         if (EconomyAPI::getInstance()->myMoney($player) < $price) {
             $player->sendMessage($this->config->get("lang")["not_enough_money"]);
             return false;
@@ -187,8 +304,18 @@ class Main extends PluginBase implements Listener{
         $this->getServer()->dispatchCommand(new ConsoleCommandSender(), str_replace("@p", $player->getName(), $command));
         EconomyAPI::getInstance()->reduceMoney($player, $price);
     }
-
-    public function sellItem($item, $quantity, $player) {
+    
+    /**
+     * Removes an item from a player's inventory and increases the player's money.
+     *
+     * @param array  $item     An array containing the information of a shop item.
+     * @param int    $quantity The quantity to sell.
+     * @param Player $player   The player.
+     * 
+     * @return void
+     */
+    public function sellItem($item, $quantity, $player)
+    {
         $itemObject = Item::get($item["id"], $item["dv"], $item["stack"] * $quantity);
 
         if (!$player->getInventory()->contains($itemObject)) {
@@ -206,10 +333,22 @@ class Main extends PluginBase implements Listener{
 
     }
 
-    public function purchaseItem($item, $quantity, $player) {
+    /**
+     * Adds an item to a player's inventory and reduces the player's money.
+     *
+     * @param array  $item     The item data.
+     * @param int    $quantity The quantity.
+     * @param Player $player   The Player object.
+     * 
+     * @return void
+     */
+    public function purchaseItem($item, $quantity, $player)
+    {
         $itemObject = Item::get($item["id"], $item["dv"], $item["stack"] * $quantity);
 
-        if ($item["custom_name"] != $item["name"]) $itemObject->setCustomName($item["custom_name"]);
+        if ($item["custom_name"] != $item["name"]) {
+            $itemObject->setCustomName($item["custom_name"]);
+        }
 
         if (!$player->getInventory()->canAddItem($itemObject)) {
             $player->sendMessage($this->config->get("lang")["not_enough_storage"]);
@@ -230,7 +369,15 @@ class Main extends PluginBase implements Listener{
         $player->sendMessage(str_replace(["[quantity]", "[item]", "[cost]"], [$item["stack"] * $quantity, $item["custom_name"], $transactionValue], $this->config->get("lang")["you_purchased"]));
     }
 
-    public function parseShopItem($entry) {
+    /**
+     * Parse the item string into useable item information. 
+     *
+     * @param string $entry A string containing information on a shop item.
+     * 
+     * @return array
+     */
+    public function parseShopItem($entry)
+    {
         $item = [];
 
         $item["command"] = false; // cmd:The Alleviator:12000:citem alleviator @p
