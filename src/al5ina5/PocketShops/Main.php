@@ -31,8 +31,8 @@ class Main extends PluginBase implements Listener{
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
     
         $defaultConfig = [
+            "default_shop" => "shop",
             "lang" => [
-                "default_shop" => "shop",
                 "onenable_message" => "Enabled",
                 "ondisable_message" => "Disabled",
                 "store_message" => "Hey! Each [item] will cost $[price]. How many would you like to purchase? We'll take yours off your hands for $[sell_price] a piece.",
@@ -42,12 +42,13 @@ class Main extends PluginBase implements Listener{
                 "you_purchased" => "You purchased [quantity] [item] for $[cost].",
                 "you_sold" => "You sold [quantity] [item] for $[profit].",
                 "no_permission" => "You do not have permission to access this shop.",
-                "no_shops_defined" => "No shops are defined in the shops.yml file. Please define at least one shop and this message will disappear forever. Please refer to documentation for information on how to define shops."
+                "no_shops_defined" => "No shops are defined in the shops.yml file. Please define at least one shop and this message will disappear forever. Please refer to documentation for information on how to define shops.",
+                "shop_not_found" => "That shop does not exist."
             ],
             "plugin_info" => [
                 "author" => "Sebastian Alsina",
                 "github" => "https://github.com/al5ina5/PocketShops/",
-                "documentation" => "https://github.com/al5ina5/PocketShops/wiki",
+                "documentation" => "https://github.com/al5ina5/PocketShops/wiki/",
                 "please_check_out" => "https://underforums.com"
             ]
         ];
@@ -71,7 +72,7 @@ class Main extends PluginBase implements Listener{
 		switch($command->getName()){
             case "shop":
                 if (!isset($args[0])) {
-                    $this->openShop($this->config->get("lang")["default_shop"], $sender->getPlayer());
+                    $this->openShop($this->config->get("default_shop"), $sender->getPlayer());
                     return true;
                 }
 
@@ -96,7 +97,11 @@ class Main extends PluginBase implements Listener{
             return true;
         }
         
-        if (!isset($this->shops->getAll()[$shopName])) return;
+        if (!isset($this->shops->getAll()[$shopName])) {
+            $player->sendMessage($this->config->get("lang")["shop_not_found"]);
+            return true;
+        }
+
         $shop = $this->shops->getAll()[$shopName];
 
         if (!$player->hasPermission("pocketshops.command.$shopName")) {
@@ -197,12 +202,14 @@ class Main extends PluginBase implements Listener{
         EconomyAPI::getInstance()->addMoney($player, $transactionValue);
 
         $player->sendMessage("You sold " . $item["stack"] * $quantity . " " . $item["name"] . " for " . $transactionValue . ".");
-        $player->sendMessage(str_replace(["[quantity]", "[item]", "[profit]"], [$item["stack"] * $quantity, $item["name"], $transactionValue], $this->config->get("lang")["you_sold"]));
+        $player->sendMessage(str_replace(["[quantity]", "[item]", "[profit]"], [$item["stack"] * $quantity, $item["custom_name"], $transactionValue], $this->config->get("lang")["you_sold"]));
 
     }
 
     public function purchaseItem($item, $quantity, $player) {
         $itemObject = Item::get($item["id"], $item["dv"], $item["stack"] * $quantity);
+
+        if ($item["custom_name"] != $item["name"]) $itemObject->setCustomName($item["custom_name"]);
 
         if (!$player->getInventory()->canAddItem($itemObject)) {
             $player->sendMessage($this->config->get("lang")["not_enough_storage"]);
@@ -220,7 +227,7 @@ class Main extends PluginBase implements Listener{
         EconomyAPI::getInstance()->reduceMoney($player, $transactionValue);
 
         
-        $player->sendMessage(str_replace(["[quantity]", "[item]", "[cost]"], [$item["stack"] * $quantity, $item["name"], $transactionValue], $this->config->get("lang")["you_purchased"]));
+        $player->sendMessage(str_replace(["[quantity]", "[item]", "[cost]"], [$item["stack"] * $quantity, $item["custom_name"], $transactionValue], $this->config->get("lang")["you_purchased"]));
     }
 
     public function parseShopItem($entry) {
