@@ -96,7 +96,6 @@ class Main extends PluginBase implements Listener
 
         $this->getLogger()->info(TextFormat::YELLOW . TextFormat::BOLD . $this->config->get("lang")["onenable_message"]);
     }
-
     
     /**
      * An event fired when the plugin is disabled.
