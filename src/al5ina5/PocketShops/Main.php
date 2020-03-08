@@ -35,19 +35,20 @@ class Main extends PluginBase implements Listener{
                 "default_shop" => "shop",
                 "onenable_message" => "Enabled",
                 "ondisable_message" => "Disabled",
-                "store_message" => "Hey! Each {item} will cost {price}. How many would you like to purchase? We'll take yours off your hands for {sell_price}.",
+                "store_message" => "Hey! Each [item] will cost $[price]. How many would you like to purchase? We'll take yours off your hands for $[sell_price] a piece.",
                 "not_enough_money" => "You do not have enough money to purchase this item.",
                 "not_enough_items" => "You do not have enough of that item in your inventory to sell.",
                 "not_enough_storage" => "Not enough space in your inventory to deposit your items. Free up some space and come back!",
-                "you_purchased" => "You purchased {quantity} {item} for {cost}.",
-                "you_sold" => "You sold {quantity} {item} for {profit}.",
+                "you_purchased" => "You purchased [quantity] [item] for $[cost].",
+                "you_sold" => "You sold [quantity] [item] for $[profit].",
                 "no_permission" => "You do not have permission to access this shop.",
                 "no_shops_defined" => "No shops are defined in the shops.yml file. Please define at least one shop and this message will disappear forever. Please refer to documentation for information on how to define shops."
             ],
             "plugin_info" => [
                 "author" => "Sebastian Alsina",
-                "github" => "https://github.com/al5ina5/",
-                "documentation" => "https://github.com/al5ina5/PocketShop/"
+                "github" => "https://github.com/al5ina5/PocketShops/",
+                "documentation" => "https://github.com/al5ina5/PocketShops/wiki",
+                "please_check_out" => "https://underforums.com"
             ]
         ];
         
@@ -160,7 +161,7 @@ class Main extends PluginBase implements Listener{
 
         $form->setTitle($item["custom_name"]);
         $form->addLabel(
-            str_replace(["{item}", "{price}", "{sell_price}"], [$item["custom_name"], $item["price"], $item["sell_price"]], $this->config->get("lang")["store_message"])
+            str_replace(["[item]", "[price]", "[sell_price]"], [$item["custom_name"], $item["price"], $item["sell_price"]], $this->config->get("lang")["store_message"])
             // "Each " . $item["custom_name"] . " will cost you $" . $item["price"] . ".\n" .
             // "How many would you like to purchase?\n" .
             // "We'll buy yours for $" . $item["sell_price"] . " a piece.\n\n"
@@ -196,7 +197,7 @@ class Main extends PluginBase implements Listener{
         EconomyAPI::getInstance()->addMoney($player, $transactionValue);
 
         $player->sendMessage("You sold " . $item["stack"] * $quantity . " " . $item["name"] . " for " . $transactionValue . ".");
-        $player->sendMessage(str_replace(["{quantity}", "{item}", "{profit}"], [$item["stack"] * $quantity, $item["name"], $transactionValue], $this->config->get("lang")["you_sold"]));
+        $player->sendMessage(str_replace(["[quantity]", "[item]", "[profit]"], [$item["stack"] * $quantity, $item["name"], $transactionValue], $this->config->get("lang")["you_sold"]));
 
     }
 
@@ -219,7 +220,7 @@ class Main extends PluginBase implements Listener{
         EconomyAPI::getInstance()->reduceMoney($player, $transactionValue);
 
         
-        $player->sendMessage(str_replace(["{quantity}", "{item}", "{cost}"], [$item["stack"] * $quantity, $item["name"], $transactionValue], $this->config->get("lang")["you_purchased"]));
+        $player->sendMessage(str_replace(["[quantity]", "[item]", "[cost]"], [$item["stack"] * $quantity, $item["name"], $transactionValue], $this->config->get("lang")["you_purchased"]));
     }
 
     public function parseShopItem($entry) {
