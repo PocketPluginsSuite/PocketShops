@@ -14,6 +14,10 @@ PocketShops aims to be an extremely powerful solution to create shops on PocketM
 - [ ] Using unsupported or old versions of PocketMine. Nah!
 
 # Installation
+
+### Requirements
+- [EconomyAPI Plugin](https://poggit.pmmp.io/p/EconomyAPI)
+
 Installation is simple. You have 2 options.
 1. Download the latest .phar of PocketShops on Poggit (coming soon) and place it into your `/plugins/` folder.
 2. Run the plugin from source code by cloning this repository into your `/plugins/` folder. You must have [PocketMine's DevTools plugin](https://poggit.pmmp.io/p/DevTools) installed on your server.

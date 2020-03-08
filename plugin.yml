@@ -3,6 +3,7 @@ name: PocketShops
 version: 1.0.0
 main: al5ina5\PocketShops\Main
 api: 3.11.6
+depend: EconomyAPI
 
 commands:
  shop:
