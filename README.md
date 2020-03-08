@@ -5,7 +5,7 @@ PocketShops aims to be an extremely powerful solution to create shops on PocketM
 
 # Features
 - [x] Multiple shops: Create as many as you need!
-- [x] Custom your item names: Create unique lore around Pocketmine's standard items! 
+- [x] Customize your item names: Create unique lore around Pocketmine's standard items! 
 - [x] Per-shop permissions: Allows access to shops on a per-rank basis.
 - [x] Simple setup procedure: Clearly defined `shops.yml` and easy-to-read documentation.
 - [x] Active development and community: Get help directly from the developer(s) on [UNDERFORUMS](http://underforums.com). This plugins serves their servers so is constantly under development.
